@@ -1,6 +1,7 @@
+os
 numpy
 pandas
 sklearn
 statsmodels
 joblib
-os
+xgboost
