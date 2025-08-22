@@ -160,17 +160,36 @@ class LogisticRegressionFeatureSelectionModel():
     
 
 class LogisticRegressionFeatureSelectionStackedModel():
-    def __init__(self, *args, **kwargs):
-        self.base_lr = LogisticRegression(**kwargs)
-        self.rf = RandomForestClassifier(n_estimators=500, random_state=42)
+    def __init__(self):
+        self.base_lr = LogisticRegression(
+            penalty='l2',
+            C = 1.0,
+            solver='lbfgs',
+            max_iter=500,
+            class_weight=None,
+        )
+        self.rf = RandomForestClassifier(
+            n_estimators=1000,
+            max_depth=None,
+            min_samples_split=2,
+            min_samples_leaf=1,
+            max_features="sqrt", 
+            bootstrap=True,         
+            class_weight=None,
+            random_state=42
+        )
         self.xgb = XGBClassifier(
-            # n_estimators=500,
-            # learning_rate=0.05,
-            # max_depth=5,
-            # subsample=0.8,
-            # colsample_bytree=0.8,
+            # n_estimators=1000,         
+            # learning_rate=0.1,       
+            # max_depth=None,              
+            # subsample=0.8,           
+            # colsample_bytree=0.8,     
+            # gamma=0,                  
+            # reg_alpha=0,              
+            # reg_lambda=1,             
+            # scale_pos_weight=1,       
+            # min_child_weight=1,      
             # random_state=42,
-            # use_label_encoder=False,
             # eval_metric="logloss"
         )
         self.is_trained = False
