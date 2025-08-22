@@ -5,3 +5,5 @@ sklearn
 statsmodels
 joblib
 xgboost
+matplotlib
+seaborn

@@ -1,17 +1,15 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from config import input_cols, target_col, DATASET_PATH, TRAIN_DATASET_PATH, TEST_DATASET_PATH
+from config import DATASET_PATH, TRAIN_DATASET_PATH, TEST_DATASET_PATH
 from logistic_regression import LogisticRegressionModel, LogisticRegressionFeatureSelectionModel
 
 dataset = pd.read_csv(DATASET_PATH)
-
-# Check if dataset is balanced -- Uncomment below
-# print(dataset["Y"].value_counts())
+dataset['X5*X6'] = (dataset['X5'] * dataset['X6']).astype(int)
 
 # Input/Target
-X = dataset[input_cols]  
-y = dataset[target_col]
+X = dataset[['X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X5*X6']]  
+y = dataset['Y']
 
 # Train-Test Split
 X_train, X_test, y_train, y_test = train_test_split(

@@ -9,7 +9,7 @@ import joblib
 import os
 import numpy as np
 import pandas as pd
-from config import pval_threshold, input_cols, target_col, save_model_dir,save_results_dir, rf_importance_threshold, xgb_importance_threshold
+from config import pval_threshold, save_model_dir,save_results_dir, rf_importance_threshold, xgb_importance_threshold, lr_coefficient_threshold
 
 # def logistic_regression(X_train, X_test, y_train, y_test):
 #     model = LogisticRegression()
@@ -103,16 +103,18 @@ class LogisticRegressionFeatureSelectionModel():
         X_train_sm = sm.add_constant(X_train_scaled)
         logit_model = sm.Logit(y_train, X_train_sm)
         result = logit_model.fit()
+        # result = logit_model.fit_regularized(method='l1', alpha=0.1)
         pvalues = result.pvalues.drop('const')
         return result.params, pvalues
     
     def feature_selection(self, X_train, y_train):
         coefficients, pvalues = self.get_coefficients_pvalues(X_train, y_train)
-        self.features = pvalues[pvalues<pval_threshold].index.tolist()
+        self.features = coefficients[abs(coefficients)>lr_coefficient_threshold].index.tolist()
         print('Features Selected are: ', self.features)
+        return pvalues, coefficients
     
     def train(self, X_train, y_train):
-        self.feature_selection(X_train, y_train)
+        pvalues, coefficients = self.feature_selection(X_train, y_train)
         X_train_scaled = pd.DataFrame(self.scaler.fit_transform(X_train[self.features]), columns=self.features)
         self.model.fit(X_train_scaled, y_train)
         self.is_trained = True
@@ -185,20 +187,24 @@ class LogisticRegressionFeatureSelectionStackedModel():
         X_train_sm = sm.add_constant(X_train_scaled)
         logit_model = sm.Logit(y_train, X_train_sm)
         result = logit_model.fit()
+        # result = logit_model.fit_regularized(method='l1', alpha=0.1)
         pvalues = result.pvalues.drop('const')
         return result.params, pvalues      
         
     def feature_selection(self, X_train, y_train):
         coefficients, pvalues = self.get_lr_coefficients_pvalues(X_train, y_train)
-        self.lr_features = pvalues[pvalues<pval_threshold].index.tolist()
+        self.lr_features = coefficients[abs(coefficients)>lr_coefficient_threshold].index.tolist()
+        print('LR feature Coefficients:\n ', coefficients)
         print('Features Selected for LR: ', self.lr_features)
         self.rf.fit(X_train, y_train)
         rf_importances = pd.Series(self.rf.feature_importances_, index=X_train.columns)
         self.rf_features = rf_importances[rf_importances>rf_importance_threshold].index.tolist()
+        print('RF feature importances:\n ', rf_importances)
         print('Features Selected for RF: ', self.rf_features)
         self.xgb.fit(X_train, y_train)
         xgb_importances = pd.Series(self.xgb.feature_importances_, index=X_train.columns)
         self.xgb_features = xgb_importances[xgb_importances>xgb_importance_threshold].index.tolist()
+        print('XGB feature importances:\n ', xgb_importances)
         print('Features Selected for XGB: ', self.xgb_features)
     
     def train(self, X_train, y_train):
@@ -253,13 +259,15 @@ class LogisticRegressionFeatureSelectionStackedModel():
         print('Features selected for LR are: ', saved_lr_features)
         print('Features selected for RF are: ', saved_rf_features)
         print('Features selected for XGB are: ', saved_xgb_features)
-        print("Accuracy on Test Set with Feature Selection:", accuracy)
+        print("Accuracy on Test Set with Stacked Mode;:", accuracy)
         
         lr_pred = saved_model.named_estimators_['lr'].predict(X_test)
         rf_pred = saved_model.named_estimators_['rf'].predict(X_test)
-        rf_pred = saved_model.named_estimators_['xgb'].predict(X_test)
+        xgb_pred = saved_model.named_estimators_['xgb'].predict(X_test)
         print("LR vs RF predictions correlation:", np.corrcoef(lr_pred, rf_pred)[0,1])
-        print(saved_model.final_estimator_.coef_)
+        print("RF vs XGB predictions correlation:", np.corrcoef(rf_pred, xgb_pred)[0,1])
+        print("LR vs XGB predictions correlation:", np.corrcoef(lr_pred, xgb_pred)[0,1])
+        print('Model Output Coefficients [LR, RF, XGB]: ', saved_model.final_estimator_.coef_)
         
         # Save predictions
         if save_results == True:
