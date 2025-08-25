@@ -1,8 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from config import DATASET_PATH, TRAIN_DATASET_PATH, TEST_DATASET_PATH
-from logistic_regression import LogisticRegressionModel, LogisticRegressionFeatureSelectionModel
 
 dataset = pd.read_csv(DATASET_PATH)
 dataset['X5*X6'] = (dataset['X5'] * dataset['X6']).astype(int)
