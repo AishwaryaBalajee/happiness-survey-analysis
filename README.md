@@ -20,7 +20,7 @@ This project analyzes the **ACME Happiness Survey 2020** dataset to explore the 
   - Stacking Classifier (ensemble)
 
 - **Evaluation:**
-  - Accuracy, precision, recall, F1-score
+  - Accuracy
   - Comparative performance of models
 
 ## 📂 Project Structure
