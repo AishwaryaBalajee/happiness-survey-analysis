@@ -23,6 +23,20 @@ This project analyzes the **ACME Happiness Survey 2020** dataset to explore the 
   - Accuracy
   - Comparative performance of models
 
+## 📊 Data Description
+- **Y**: Target attribute  
+  - `0` → Unhappy customer  
+  - `1` → Happy customer  
+- **X1**: My order was delivered on time  
+- **X2**: Contents of my order were as I expected  
+- **X3**: I ordered everything I wanted to order  
+- **X4**: I paid a good price for my order  
+- **X5**: I am satisfied with my courier  
+- **X6**: The app makes ordering easy for me  
+
+All attributes **X1–X6** are rated on a scale from **1 to 5**, where smaller values indicate lower satisfaction and higher values indicate greater satisfaction.
+
+
 ## 📂 Project Structure
 ```
 ├── full_code.ipynb   # Jupyter Notebook with full workflow
@@ -38,7 +52,7 @@ If you wish to reproduce the workflow, you can replace the dataset with your own
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/your-username/happiness-survey-analysis.git
+git clone https://github.com/AishwaryaBalajee/happiness-survey-analysis.git
 cd happiness-survey-analysis
 pip install -r requirements.txt
 ```
