@@ -36,6 +36,9 @@ This project analyzes the **ACME Happiness Survey 2020** dataset to explore the 
 
 All attributes **X1–X6** are rated on a scale from **1 to 5**, where smaller values indicate lower satisfaction and higher values indicate greater satisfaction.
 
+⚠️ **Note on Data Access**  
+The dataset used in this project is **internal and cannot be shared**.  
+If you wish to reproduce the workflow, you can replace the dataset with your own CSV file, ensuring it has a similar structure.
 
 ## 📂 Project Structure
 ```
@@ -43,10 +46,6 @@ All attributes **X1–X6** are rated on a scale from **1 to 5**, where smaller v
 ├── README.md         # Project documentation
 └── requirements.txt  # Dependencies
 ```
-
-⚠️ **Note on Data Access**  
-The dataset used in this project is **internal and cannot be shared**.  
-If you wish to reproduce the workflow, you can replace the dataset with your own CSV file, ensuring it has a similar structure.
 
 ## ⚙️ Installation
 Clone the repository and install dependencies:
