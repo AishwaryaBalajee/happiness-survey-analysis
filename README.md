@@ -57,7 +57,7 @@ pip install -r requirements.txt
 ```
 
 ## ▶️ Usage
-Open the notebook and run all cells:
+Change paths in the Config block of the notebook and run all cells:
 
 ```bash
 jupyter notebook full_code.ipynb
